@@ -1,0 +1,23 @@
+@import "../../App.scss";
+
+.sign-in-form {
+	.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
+		&::before {
+			display: none;
+		}
+	}
+
+	.header {
+		margin-bottom: 64px;
+		p {
+			margin-bottom: 0px;
+		}
+	}
+
+	.forgot {
+		position: absolute;
+		right: 0px;
+		top: -29px;
+		color: $mainColor !important;
+	}
+}
