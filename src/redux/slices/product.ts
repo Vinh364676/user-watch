@@ -34,23 +34,23 @@ export const createProduct = createAsyncThunk(
   }
 );
 
-export const getByIdProduct = createAsyncThunk(
-  "get/getByIDProduct",
+export const getOneProduct = createAsyncThunk(
+  "get/getOneEvent",
   async (id: any) => {
-    const { data } = await productService.getById(id);
+    const { data } = await productService.getOne(id);
     return data;
   }
 );
-
 const initialState: ProductState = {
   productCount: 0,
   productList: [],
   productDetail: {
     id: 0,
     productName: '',
-    price: '',
-    quantity: '',
+    price: 0,
+    quantity: 0,
     brandId: 0,
+    accessoryId: 0,
     categoryId: 0,
     img: '',
     thumnail:'',
@@ -73,7 +73,9 @@ const slice = createSlice({
       state.productList = action.payload.result.items;
       state.productCount = action.payload.result.totalCount;
     });
-
+    builder.addCase(getOneProduct.fulfilled, (state, action) => {
+      state.productDetail = action.payload.result;
+    });
     builder.addCase(createProduct.fulfilled, (state, action) => {
       state.productList.push(action.payload);
     }); 

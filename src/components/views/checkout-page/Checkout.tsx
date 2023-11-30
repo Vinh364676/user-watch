@@ -10,7 +10,7 @@ import {
   Steps,
   message,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -21,6 +21,9 @@ import productImg from "../../../assets/images/product/product.svg";
 import "./Checkout.scss";
 import { Link } from "react-router-dom";
 import { ROUTE_PATHS } from "../../../constants/url-config";
+import { dispatch, useSelector } from "../../../redux/store";
+import { createAddress, getAddress } from "../../../redux/slices/address";
+import moment from "moment";
 const Checkout = () => {
   const [value, setValue] = useState(1);
   const onChange = (e: any) => {
@@ -29,6 +32,13 @@ const Checkout = () => {
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [current, setCurrent] = useState(0);
+  const { addressList } = useSelector((state) => state.address);
+  console.log("====================================");
+  console.log(addressList);
+  console.log("====================================");
+  useEffect(() => {
+    dispatch(getAddress({ pageIndex: 1, pageSize: 100 }));
+  }, []);
   const next = () => {
     setCurrent(current + 1);
   };
@@ -47,6 +57,25 @@ const Checkout = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  // Sao chép ngày hiện tại và thêm 7 ngày
+  const newDate = moment(currentDate).add(7, "days");
+
+  // Sao chép ngày hiện tại và thêm 7 ngày
+  const shortDate = moment(currentDate).add(3, "days");
+  const getDefaultCheckedIndex = () => {
+    const defaultCheckedAddress = addressList.find(
+      (address) => address.status === true
+    );
+    console.log("====================================");
+    console.log("defaultCheckedAddress", defaultCheckedAddress?.id);
+    console.log("====================================");
+    // If a default checked address is found, return its index; otherwise, return 0 as a fallback
+    return defaultCheckedAddress?.id;
+  };
+
   const steps = [
     {
       title: "Địa chỉ",
@@ -57,63 +86,47 @@ const Checkout = () => {
             <Col xl={14}>
               <h5 className="checkout__title">Chọn địa chỉ</h5>
               <Radio.Group
-              defaultValue={1}
+                defaultValue={getDefaultCheckedIndex()}
                 onChange={onChange}
-                value={value}
                 className="radio__custom"
               >
-                <div className="radio__container">
-                  <Radio value={1} className="radio__custom__check">
-                    <div className="radio__item">
-                      <div className="radio__address">
-                        <div className="radio__address__header">
-                          <h4 className="radio__address__title">
-                            75 Võ Thành Trang
-                          </h4>
-                          <p className="radio__address__location">Home</p>
+                {addressList.map((address) => (
+                  <div key={address.id} className="radio__container">
+                    <Radio
+                      value={address.id}
+                      checked={address.status}
+                      className="radio__custom__check"
+                    >
+                      <div className="radio__item">
+                        <div className="radio__address">
+                          <div className="radio__address__header">
+                            <h4 className="radio__address__title">
+                              {address.houseNumber} {address.ward}
+                            </h4>
+                            <p className="radio__address__location">
+                              {address.note}
+                            </p>
+                          </div>
+                          <p className="radio__address__desc">
+                            {address.ward}, {address.district},{" "}
+                            {address.province}
+                          </p>
+                          <p className="radio__address__desc">
+                            {address.phoneNumber}
+                          </p>
                         </div>
-                        <p className="radio__address__desc">
-                          Phường 11, Quận Tân Bình, Tp.HCM
-                        </p>
-                        <p className="radio__address__desc">0812364676</p>
                       </div>
+                    </Radio>
+                    <div className="radio__action">
+                      <Button className="radio__action__button">
+                        <EditOutlined />
+                      </Button>
+                      <Button className="radio__action__button">
+                        <DeleteOutlined />
+                      </Button>
                     </div>
-                  </Radio>
-                  <div className="radio__action">
-                    <Button className="radio__action__button">
-                      <EditOutlined />
-                    </Button>
-                    <Button className="radio__action__button">
-                      <DeleteOutlined />
-                    </Button>
                   </div>
-                </div>
-                <div className="radio__container">
-                  <Radio value={2} className="radio__custom__check">
-                    <div className="radio__item">
-                      <div className="radio__address">
-                        <div className="radio__address__header">
-                          <h4 className="radio__address__title">
-                            75 Võ Thành Trang
-                          </h4>
-                          <p className="radio__address__location">Home</p>
-                        </div>
-                        <p className="radio__address__desc">
-                          Phường 11, Quận Tân Bình, Tp.HCM
-                        </p>
-                        <p className="radio__address__desc">0812364676</p>
-                      </div>
-                    </div>
-                  </Radio>
-                  <div className="radio__action">
-                    <Button className="radio__action__button">
-                      <EditOutlined />
-                    </Button>
-                    <Button className="radio__action__button">
-                      <DeleteOutlined />
-                    </Button>
-                  </div>
-                </div>
+                ))}
               </Radio.Group>
             </Col>
             <Col xl={10} className="checkout__right">
@@ -178,14 +191,15 @@ const Checkout = () => {
                         <p className="radio__address__desc radio__address__desc__ship radio__address__desc__ship__title">
                           Miễn phí
                         </p>
-                        <p className="radio__address__desc radio__address__desc__ship">Giao hàng tiết kiệm</p>
+                        <p className="radio__address__desc radio__address__desc__ship">
+                          Giao hàng tiết kiệm
+                        </p>
                       </div>
                     </div>
                   </Radio>
                   <div className="radio__action">
-                   
                     <Button className="radio__action__button">
-                    17 Oct, 2023
+                      {newDate.format("DD-MM-YYYY")}
                     </Button>
                   </div>
                 </div>
@@ -194,16 +208,17 @@ const Checkout = () => {
                     <div className="radio__item">
                       <div className="radio__address radio__address__ship">
                         <p className="radio__address__desc radio__address__desc__ship radio__address__desc__ship__title">
-                        $8.50
+                          $8.50
                         </p>
-                        <p className="radio__address__desc radio__address__desc__ship">Giao hàng nhanh</p>
+                        <p className="radio__address__desc radio__address__desc__ship">
+                          Giao hàng nhanh
+                        </p>
                       </div>
                     </div>
                   </Radio>
                   <div className="radio__action">
-                   
                     <Button className="radio__action__button">
-                    17 Oct, 2023
+                      {shortDate.format("DD-MM-YYYY")}
                     </Button>
                   </div>
                 </div>
@@ -334,6 +349,16 @@ const Checkout = () => {
     key: item.title,
     title: item.title,
   }));
+  const onFinish = async (values: any) => {
+    try {
+      // Call the createAddress action with the form values
+      const response = await dispatch(createAddress(values));
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div className="containerCustom sectionCustom checkout">
       <Steps current={current} items={items} />
@@ -375,137 +400,131 @@ const Checkout = () => {
           className="modal__address"
         >
           <Form
-      name="basic"
-      labelCol={{
-        span: 24,
-      }}
-      wrapperCol={{
-        span: 24,
-      }}
-      initialValues={{
-        remember: true,
-      }}
-      // onFinish={onFinish}
-      // onFinishFailed={onFinishFailed}
-      autoComplete="off"
-      requiredMark={"optional"}
-    >
-      <Row gutter={[20,0]}>
-        <Col xl={12}>
-        <Form.Item
-        label="Họ và tên"
-        name="username"
-        
-        rules={[
-          {
-            required: true,
-            message: 'Vui lòng nhập họ và tên!',
-          },
-        ]}
-      >
-        <Input placeholder="Họ và tên" className="formAddress__input"/>
-      </Form.Item>
-        </Col>
-        <Col xl={12}>
-        <Form.Item
-        label="Số điện thoại"
-        name="phone"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your username!',
-          },
-        ]}
-      >
-        <Input placeholder="Số điện thoại" className="formAddress__input"/>
-      </Form.Item>
-        </Col>
-        <Col xl={12}>
-        <Form.Item
-        label="Ghi chú địa chỉ"
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your username!',
-          },
-        ]}
-      >
-        <Input placeholder="Ghi chú" className="formAddress__input"/>
-      </Form.Item>
-      
-        </Col>
-        <Col xl={12}>
-        <Form.Item
-        label="Trạng thái"
-        name="status"
-      >
-        <Checkbox>Mặc định</Checkbox>
-      </Form.Item>
-      
-        </Col>
-        <Col xl={12}>
-        <Form.Item
-        label="Tỉnh - Thành phố"
-        name="province"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your username!',
-          },
-        ]}
-      >
-        <Input placeholder="Tỉnh - Thành phố" className="formAddress__input"/>
-      </Form.Item>
-      
-        </Col>
-        <Col xl={12}>
-        <Form.Item
-        label="Quận - Huyện"
-        name="district"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your username!',
-          },
-        ]}
-      >
-        <Input placeholder="Quận - Huyện" className="formAddress__input"/>
-      </Form.Item>
-      
-        </Col>
-        <Col xl={12}>
-        <Form.Item
-        label="Xã - Phường"
-        name="ward"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your username!',
-          },
-        ]}
-      >
-        <Input placeholder="Xã - Phường" className="formAddress__input"/>
-      </Form.Item>
-      
-        </Col>
-        <Col xl={12}>
-        <Form.Item
-        label="Số nhà"
-        name="street"
-        rules={[
-          {
-            required: true,
-            message: 'Vui lòng nhập số nhà!',
-          },
-        ]}
-      >
-        <Input placeholder="Số nhà" className="formAddress__input"/>
-      </Form.Item>
-      
-        </Col>
-      </Row>
-    </Form>
+            name="basic"
+            labelCol={{
+              span: 24,
+            }}
+            wrapperCol={{
+              span: 24,
+            }}
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
+            // onFinishFailed={onFinishFailed}
+            autoComplete="off"
+            requiredMark={"optional"}
+          >
+            <Row gutter={[20, 0]}>
+              <Col xl={12}>
+                <Form.Item
+                  label="Số điện thoại"
+                  name="phoneNumber"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập số điện thoại!",
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Số điện thoại"
+                    className="formAddress__input"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xl={12}>
+                <Form.Item
+                  label="Ghi chú địa chỉ"
+                  name="note"
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Vui lòng ghi ghi chú địa chỉ!",
+                  //   },
+                  // ]}
+                >
+                  <Input placeholder="Ghi chú" className="formAddress__input" />
+                </Form.Item>
+              </Col>
+              <Col xl={12}>
+                <Form.Item
+                  label="Trạng thái"
+                  name="status"
+                  valuePropName="checked"
+                  initialValue={false}
+                >
+                  <Checkbox>Mặc định</Checkbox>
+                </Form.Item>
+              </Col>
+              <Col xl={12}>
+                <Form.Item
+                  label="Tỉnh - Thành phố"
+                  name="province"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập tỉnh - thành phố!",
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Tỉnh - Thành phố"
+                    className="formAddress__input"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xl={12}>
+                <Form.Item
+                  label="Quận - Huyện"
+                  name="district"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập quận - huyện!",
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Quận - Huyện"
+                    className="formAddress__input"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xl={12}>
+                <Form.Item
+                  label="Xã - Phường"
+                  name="ward"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập xã - phường!",
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Xã - Phường"
+                    className="formAddress__input"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xl={12}>
+                <Form.Item
+                  label="Số nhà"
+                  name="houseNumber"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập số nhà!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Số nhà" className="formAddress__input" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Button htmlType="submit">Thêm</Button>
+          </Form>
         </Modal>
       </div>
     </div>

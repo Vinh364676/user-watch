@@ -1,12 +1,11 @@
 import { Button, Checkbox, Col, Form, Input, Row, notification } from "antd";
 import React, { useState } from "react";
-import jwt from 'jsonwebtoken';
 import { useTranslation } from "react-i18next";
 import { RouteChildrenProps } from "react-router";
 import { Link } from "react-router-dom";
-import "./sign-in.scss";
+
 import { useAuthContext } from "../../hooks/useAuthContext";
-import banner from "../../assets/images/banner/c.jpg";
+import banner from "../../assets/images/banner/banner1.png";
 import { UserOutlined,LinkOutlined } from '@ant-design/icons';
 import accountService from "../../services/account/account.service";
 import LocalUtils from "../../utils/local";
@@ -14,15 +13,15 @@ import { LOCAL_STORAGE_KEYS } from "../../constants/local";
 import { ROUTE_PATHS } from "../../constants/url-config";
 interface Props extends RouteChildrenProps {}
 
-export default function SignIn() {
+export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuthContext();
   const onFinish = async (values: any) => {
   try {
     setLoading(true);
     const loginData = {
+      email: values.username,
       password: values.password,
-      email:values.username
     };
 
     console.log("Before API call");
@@ -34,23 +33,6 @@ export default function SignIn() {
       const token = response.data.token;
       LocalUtils.set(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, token);
       login(loginData.email, loginData.password);
-      try {
-        const decodedToken = jwt.decode(token);
-
-  // Check if decodedToken is not null
-  if (decodedToken && typeof decodedToken === 'object') {
-    // Retrieve the email address (username) from the decoded token
-    const username = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
-    console.log('====================================');
-    console.log(username);
-    console.log('====================================');
-    console.log('Username:', username);
-  } else {
-    console.error('Decoded token is null or not an object');
-  }
-      } catch (error) {
-        //console.error('Error decoding token:', error.message);
-      }
       notification.success({
         className: "notification__item",
         message: 'Đăng nhập thành công',
@@ -93,7 +75,7 @@ export default function SignIn() {
 		</Col>
         <Col span={12} className="signIn__content">
           <h2 className="signIn__content--title">Welcome</h2>
-          <p className="signIn__content--desc">Đăng nhập với tài khoản</p>
+          <p className="signIn__content--desc">Đăng ký tài khoản</p>
           <Form
             name="basic"
             labelCol={{
@@ -116,11 +98,11 @@ export default function SignIn() {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập tài khoản!",
+                  message: "Vui lòng nhập email!",
                 },
               ]}
             >
-              <Input allowClear bordered={false} placeholder="Nhập tài khoản" prefix={<UserOutlined />} className="signIn__form__input"/>
+              <Input allowClear bordered={false} placeholder="Nhập email" prefix={<UserOutlined />} className="signIn__form__input"/>
             </Form.Item>
 
             <Form.Item

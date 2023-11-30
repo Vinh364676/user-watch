@@ -1,11 +1,13 @@
 import { Button, Col, Form, Input, Row, Table } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import cartImg from "../../../assets/images/product/cart.png";
 import { MinusOutlined, PlusOutlined,DeleteOutlined } from "@ant-design/icons";
 import productImg from "../../../assets/images/product/newproduct1.png"
 import "./Cart.scss";
 import { Link } from "react-router-dom";
 import { ROUTE_PATHS } from "../../../constants/url-config";
+import { dispatch, useSelector } from "../../../redux/store";
+import { getProduct } from "../../../redux/slices/product";
 const Cart = () => {
   const handleQuantityChange = (recordKey: string, action: 'increment' | 'decrement') => {
     // Implement logic to update the quantity in the data array based on the action
@@ -20,7 +22,7 @@ const Cart = () => {
         <div className="cart__table__name">
           <img
             // className="product__table__img"
-            src={productImg}
+            src={record.image}
             style={{ width: "50px" }}
           />
           <span>
@@ -66,16 +68,35 @@ const Cart = () => {
       ),
     },
   ];
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    
-  ];
+
+
+  const { productList } = useSelector((state) => state.product);
+  useEffect(() => {
+    dispatch(getProduct({ pageIndex: 1, pageSize: 100 }));
+  }, []);
+  const storedProductListString = sessionStorage.getItem("productList");
+  const storedProductList = storedProductListString
+    ? JSON.parse(storedProductListString)
+    : [];
+    const combinedProductList = productList.map((product) => {
+      const storedProduct = storedProductList.find(
+        (item: any) => item.id === product.id
+      );
+      return {
+        ...product,
+        product: storedProduct ? storedProduct.id : 0,
+        quantity: storedProduct ? storedProduct.quantity : 0,
+      };
+    });
+  
+    const data = combinedProductList
+    .filter((product) => product.product !== 0)
+    .map((product) => ({
+      key: product.id.toString(),
+      name: product.productName,
+      image: product.thumnail,
+      quantity: product.quantity,
+    }));
   return (
     <div className="containerCustom sectionCustom cart">
       <Row gutter={[56,0]}> 

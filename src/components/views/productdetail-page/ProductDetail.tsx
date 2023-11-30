@@ -12,6 +12,8 @@ import RateCustomer from "./rateCustomer/rateCustomer";
 import BannerComponent from "../banner/BannerComponent";
 import { dispatch, useSelector } from "../../../redux/store";
 import { getCategory } from "../../../redux/slices/category";
+import {  getOneProduct } from "../../../redux/slices/product";
+import { useParams } from "react-router";
 const items = [
   {
     key: '1',
@@ -25,18 +27,37 @@ const items = [
   },
 ];
 const ProductDetailPage = () => {
+  const productDetail = useSelector((state) => state.product.productDetail);
+
+  const params = useParams<{id: any}>()
+  console.log('====================================');
+  console.log("productDetail",productDetail);
+  console.log('====================================');
+ 
+  useEffect(()=> {
+    if(params) {
+      dispatch(getOneProduct(params.id))
+    }
+  }, [params])
+  
+  const imageArray = productDetail.img.split(',');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  useEffect(() => {
+    if (selectedImage === null && imageArray.length > 0) {
+      setSelectedImage(imageArray[0]);
+    }
+  }, []);
   const handleImageClick = (imagePath: any) => {
     setSelectedImage(imagePath);
   };
 
-  const imageArray = [product, product1, product2, product4];
-  useEffect(() => {
-    // Check if selectedImage is null and set it to the first image in the array
-    if (selectedImage === null && imageArray.length > 0) {
-      setSelectedImage(imageArray[0]);
-    }
-  }, [selectedImage, imageArray]);
+  console.log('====================================');
+  console.log(imageArray[0]);
+  console.log('====================================');
+  const formattedPrice = (+productDetail.price).toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
 
   return (
     <div className=" prDetail">
@@ -76,8 +97,8 @@ const ProductDetailPage = () => {
           </Row>
         </Col>
         <Col xl={12} className="prDetail__right">
-          <h2 className="title">Apple iPhone 14 Pro Max</h2>
-          <h5>$1399</h5>
+          <h2 className="title">{productDetail.productName}</h2>
+          <h5>{formattedPrice}</h5>
           <div className="prDetail__right__container">
           <div className="subTitle prDetail__right__container__buy">Đã bán 5</div>
             <div className="prDetail__right__rate">
@@ -92,7 +113,7 @@ const ProductDetailPage = () => {
               <Radio.Button
                 value="a"
                 className="prDetail__right__color__item"
-                style={{ background: 'red' }}
+                style={{ background: productDetail.color }}
               ></Radio.Button>
               <Radio.Button
                 value="b"
@@ -106,9 +127,7 @@ const ProductDetailPage = () => {
           </div>
 
           <p className="subTitle prDetail__right__descItem">
-            Setting the bar as one of the loudest speakers in its class, the
-            Kilburn is a compact, stout-hearted hero with a well-balanced audio
-            which boasts a clear midrange and extended highs for a sound.
+            {productDetail.description}
           </p>
           <div className="prDetail__right__buttonItem">
             <Button className="buttonHeart">Thêm vào yêu thích</Button>
@@ -119,10 +138,10 @@ const ProductDetailPage = () => {
             <DiliverIcon />
             <div className="prDetail__right__footer__text">
               <span className="prDetail__right__footer__text--title">
-                Free Delivery
+                Giao hàng miễn phí
               </span>
               <span className="prDetail__right__footer__text--desc">
-                1-2 day
+                1-2 ngày
               </span>
             </div>
           </div>
@@ -141,10 +160,10 @@ const ProductDetailPage = () => {
             <DiliverIcon />
             <div className="prDetail__right__footer__text">
               <span className="prDetail__right__footer__text--title">
-                Free Delivery
+                Bảo hành
               </span>
               <span className="prDetail__right__footer__text--desc">
-                1-2 day
+                1 năm
               </span>
             </div>
           </div>

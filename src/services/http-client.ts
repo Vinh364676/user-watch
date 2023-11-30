@@ -96,17 +96,21 @@ export const getAsync = (
 	isShowLoading: boolean = true,
 	isShowMessage: boolean = true,
 	handleErrorAutomatic: boolean = true
-): Promise<AxiosResponse> => {
-	return axiosInstance(handleErrorAutomatic, undefined, "application/json", "json", isShowLoading, isShowMessage).get(
-		url,
-		{
-			params: params,
-			paramsSerializer: function (params) {
-				return qs.stringify(params, { arrayFormat: "repeat" })
-			},
-		}
-	)
-}
+  ): Promise<AxiosResponse> => {
+	return axiosInstance(
+	  handleErrorAutomatic,
+	  undefined,
+	  "application/json",
+	  "json",
+	  isShowLoading,
+	  isShowMessage
+	).get(url, {
+	  params: params,
+	  paramsSerializer: function (params) {
+		return qs.stringify(params, { arrayFormat: "repeat" });
+	  },
+	});
+  };
 
 export const postAsync = (
 	url: string,

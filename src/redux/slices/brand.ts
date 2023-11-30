@@ -55,7 +55,7 @@ export const getBrand = createAsyncThunk(
     reducers: {},
     extraReducers: (builder) => {
       builder.addCase(getBrand.fulfilled, (state, action) => {
-          state.brandList = action.payload.result;
+          state.brandList = action.payload.result.items;
         });
       builder.addCase(deleteBrand.fulfilled, (state, action) => {
           state.brandList = state.brandList.filter((brand) => brand.id !== action.payload);
@@ -64,7 +64,7 @@ export const getBrand = createAsyncThunk(
           state.brandList.push(action.payload);
         }); 
         builder.addCase(getByIdBrand.fulfilled, (state, action) => {
-          state.brandDetail = action.payload.result;
+          state.brandDetail = action.payload.result.items;
         });
         builder.addCase(updateBrand.fulfilled, (state, action) => {
           state.brandList = state.brandList.map((brand) =>

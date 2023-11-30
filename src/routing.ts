@@ -6,6 +6,7 @@ import HomePage from './pages/home/home';
 import ProductDetail from "./pages/product-detail/ProductDetail";
 import ShopPage from "./pages/shop/Shop";
 import SignIn from './pages/sign-in/sign-in';
+import SignUp from "./pages/sign-up/sign-up";
 
 export interface Route {
     groupIndex?: number
@@ -34,6 +35,16 @@ const anonymousPage: Route[] = [
         component: SignIn,
         hidden: true,
         permissions: [],
+        loginRequired: true,
+    },
+    {
+        href: ROUTE_PATHS.SignUp,
+        title: "",
+        exact: true,
+        component: SignUp,
+        hidden: true,
+        permissions: [],
+        loginRequired: true,
     },
 ]
 

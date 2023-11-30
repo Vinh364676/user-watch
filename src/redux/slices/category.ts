@@ -55,7 +55,7 @@ export const getCategory = createAsyncThunk(
     reducers: {},
     extraReducers: (builder) => {
       builder.addCase(getCategory.fulfilled, (state, action) => {
-          state.categoryList = action.payload.result;
+          state.categoryList = action.payload.result.items;
         });
       builder.addCase(deleteCategory.fulfilled, (state, action) => {
           state.categoryList = state.categoryList.filter((category) => category.id !== action.payload);
@@ -64,7 +64,7 @@ export const getCategory = createAsyncThunk(
           state.categoryList.push(action.payload);
         }); 
         builder.addCase(getByIdCategory.fulfilled, (state, action) => {
-          state.categoryDetail = action.payload.result;
+          state.categoryDetail = action.payload.result.items;
         });
         builder.addCase(updateCategory.fulfilled, (state, action) => {
           state.categoryList = state.categoryList.map((category) =>

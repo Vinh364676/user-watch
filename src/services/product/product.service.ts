@@ -19,7 +19,7 @@ class ProductService {
   put = async (id: any, data: any): Promise<AxiosResponse> => {
     return await putAsync(`/Product/Update/${id}`, data); 
   }
-  getById = async (id: any): Promise<AxiosResponse> => {
+  getOne = async (id: any): Promise<AxiosResponse> => {
     return await getAsync(`/Product/GetById/${id}`)
   }
 }

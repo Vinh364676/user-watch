@@ -9,7 +9,7 @@ enum ROUTE_PATHS {
 	"Shop" = "/shop",
 	"Cart" = "/cart",
 	"Checkout" = "/checkout",
-	"ProductDetail" = "/product-detail"
+	"ProductDetail" = "/product-detail/:id"
 }
 
 //this variable is using for params url

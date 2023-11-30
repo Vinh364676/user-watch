@@ -8,8 +8,8 @@ export type ProductState = {
 export type Product ={
     id:number,
     productName:string,
-    price:String,
-    quantity:string,
+    price:number,
+    quantity:number,
     brandId:number,
     categoryId:number,
     img:string,
@@ -20,6 +20,7 @@ export type Product ={
     code:string,
     gender:string,
     status:string,
-    createdDT:string
+    createdDT:string,
+    accessoryId:number
 
 }

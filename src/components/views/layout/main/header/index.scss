@@ -24,6 +24,10 @@
             padding-left: 0;
              gap: 10px;
             justify-content: flex-end;
+            &__search{
+                display: flex;  
+                
+            }
             li{
                 img{
                     padding: 10px;
@@ -35,6 +39,12 @@
                 }
                 
             
+        }
+        .input__search{
+            width: 200px;
+            border-radius: 0;
+            border-bottom: 1px solid #000;
+            padding: 4px 0px;
         }
     }
     
@@ -52,8 +62,8 @@
             display: flex;
             border-radius: 10px;
             &__img{
-                height: 96px;
-                width: 100%;
+                height: 60px;
+                width: 60px;
                 border-radius: 10px;
             }
         }
@@ -77,7 +87,7 @@
                     color: #1890ff;
                 }
                 span{
-                    font-size: 16px;
+                    font-size: 13px;
                 }
             }
             &__number{
@@ -132,4 +142,79 @@
       opacity: 1;
     }
   }
+  /* YourComponent.css */
+
+/* Hiệu ứng khi thẻ active */
+/* Hiệu ứng khi thẻ active và inactive */
+.header__content__right__search .input-container {
+    animation: slideInOut 0.5s ease-in-out;
+  }
   
+  /* Hiệu ứng khi hiding */
+  .header__content__right__search.hiding .input-container {
+    animation: slideOut 0.5s ease-in-out;
+  }
+  
+  /* Định nghĩa animation khi chạy từ phải sang giữa hoặc từ trái sang giữa */
+  @keyframes slideInOut {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  /* Định nghĩa animation khi chạy từ giữa ra phải (ngược lại) */
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+.searchData{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 10px 0;
+    padding: 10px 0;
+    h5{
+        margin: 0;
+    }
+    &__img{
+        width: 60px;
+        height: 60px;
+    }
+    &:hover{
+        background: #F6F6F6;
+    }
+}
+
+.ant-popover-content{
+    width: 350px;
+}
+.ant-popover-inner-content{
+    border-radius: 10px;
+    width: 100%;
+    padding: 0 16px;
+    max-height: 220px;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        width: 4px; /* Set the width of the scrollbar */
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background-color: #888; /* Set the color of the thumb */
+        border-radius: 6px; /* Set the border radius of the thumb */
+    }
+    
+    &::-webkit-scrollbar-track {
+        background-color: #f1f1f1; /* Set the color of the track */
+    }
+    
+}
+.emptySearch{
+    margin: 20px;
+}

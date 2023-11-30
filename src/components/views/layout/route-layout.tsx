@@ -82,9 +82,9 @@ const RouteLayout = ({ component: Component, ...rest }: any) => {
   const renderLayout = () => {
     if (isAuthenticated) {
       return (
-          <MainLayout>
+          <AnonymousLayout>
             <Component />
-          </MainLayout>
+          </AnonymousLayout>
         );
       // if (!isLoginRequired) {
         
